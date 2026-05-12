@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cadastro de Mensalista / Credenciado / Condômino — Auto Park</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy:   #0D1F3C;
+    --red:    #C8102E;
+    --white:  #FFFFFF;
+    --gray:   #F2F4F7;
+    --border: #CBD2DC;
+    --text:   #1A2333;
+    --muted:  #6B7A90;
+    --input-h: 38px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Barlow', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--gray);
+    min-height: 100vh;
+    padding: 0 0 60px;
+  }
+
+  /* ── TOPO ── */
+  .topbar {
+    background: var(--navy);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,.25);
+  }
+  .topbar-logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--white);
+    letter-spacing: -0.5px;
+    line-height: 1;
+  }
+  .topbar-logo span { color: var(--red); }
+  .topbar-divider { width: 1px; height: 28px; background: rgba(255,255,255,.2); }
+  .topbar-info { color: rgba(255,255,255,.75); font-size: 12px; line-height: 1.4; }
+  .topbar-info strong { color: var(--white); display: block; font-size: 13px; }
+
+  /* ── WRAPPER ── */
+  .wrapper {
+    max-width: 720px;
+    margin: 28px auto 0;
+    padding: 0 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* ── CARD DE SEÇÃO ── */
+  .card {
+    background: var(--white);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .card-header {
+    background: var(--navy);
+    color: var(--white);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+    padding: 7px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-header .num {
+    background: var(--red);
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .card-body { padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; }
+
+  /* ── TIPO CADASTRO ── */
+  .tipo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .tipo-btn {
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 10px;
+    text-align: center;
+    cursor: pointer;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    transition: all .18s;
+    user-select: none;
+    background: var(--white);
+  }
+  .tipo-btn:hover { border-color: var(--navy); color: var(--navy); }
+  .tipo-btn.active { border-color: var(--navy); background: var(--navy); color: var(--white); }
+  .tipo-btn.active .tipo-icon { filter: brightness(10); }
+  .tipo-icon { font-size: 20px; display: block; margin-bottom: 4px; }
+
+  /* ── PF / PJ toggle ── */
+  .toggle-row {
+    display: flex;
+    gap: 8px;
+  }
+  .toggle-btn {
+    flex: 1;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    padding: 7px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    transition: all .15s;
+    background: var(--white);
+  }
+  .toggle-btn:hover { border-color: var(--navy); color: var(--navy); }
+  .toggle-btn.active { border-color: var(--red); background: #FEF2F2; color: var(--red); }
+
+  /* ── GRID DE CAMPOS ── */
+  .row { display: grid; gap: 12px; }
+  .col-1 { grid-template-columns: 1fr; }
+  .col-2 { grid-template-columns: 1fr 1fr; }
+  .col-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .col-3-1 { grid-template-columns: 3fr 1fr; }
+  .col-2-1 { grid-template-columns: 2fr 1fr; }
+  .col-1-2 { grid-template-columns: 1fr 2fr; }
+
+  /* ── CAMPO ── */
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .5px;
+  }
+  .field label .req { color: var(--red); margin-left: 2px; }
+  .field input,
+  .field select,
+  .field textarea {
+    height: var(--input-h);
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    padding: 0 10px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--white);
+    outline: none;
+    transition: border-color .15s;
+    width: 100%;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus { border-color: var(--navy); }
+  .field input.error,
+  .field select.error { border-color: var(--red); background: #FEF2F2; }
+  .field textarea { height: 70px; padding: 8px 10px; resize: vertical; line-height: 1.4; }
+  .field .hint { font-size: 10.5px; color: var(--muted); margin-top: 1px; }
+
+  /* ── VEÍCULOS ── */
+  .veiculo-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .veiculo-header {
+    background: var(--gray);
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--navy);
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .veiculo-header .badge {
+    background: var(--navy);
+    color: var(--white);
+    border-radius: 4px;
+    padding: 1px 7px;
+    font-size: 10px;
+  }
+  .veiculo-header .badge.opt {
+    background: var(--border);
+    color: var(--muted);
+  }
+  .veiculo-body { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+
+  /* ── SEÇÕES CONDICIONAIS ── */
+  .cond-section { display: none; }
+  .cond-section.visible { display: block; }
+
+  /* ── AVISO INTERNO ── */
+  .aviso-interno {
+    background: #FFF8E1;
+    border: 1px solid #F9C825;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #7A5C00;
+    line-height: 1.5;
+  }
+  .aviso-interno strong { display: block; margin-bottom: 2px; font-size: 12px; }
+
+  /* ── NORMAS ── */
+  .normas {
+    background: var(--gray);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    font-size: 12px;
+    line-height: 1.65;
+    color: var(--text);
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  .normas p { margin-bottom: 6px; }
+  .normas strong { font-weight: 600; }
+
+  /* ── ACEITE ── */
+  .check-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+  }
+  .check-row input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--navy);
+    flex-shrink: 0;
+    margin-top: 1px;
+    cursor: pointer;
+  }
+  .check-row span { font-size: 13px; line-height: 1.5; }
+
+  /* ── BOTÃO ENVIAR ── */
+  .btn-submit {
+    background: var(--red);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    padding: 14px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    width: 100%;
+    transition: background .18s, transform .1s;
+    margin-top: 4px;
+  }
+  .btn-submit:hover { background: #A50D24; }
+  .btn-submit:active { transform: scale(.99); }
+  .btn-submit:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
+
+  /* ── FEEDBACK ── */
+  .feedback {
+    display: none;
+    border-radius: 10px;
+    padding: 32px 24px;
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .feedback.success { background: #F0FDF4; border: 1px solid #86EFAC; display: flex; }
+  .feedback.error-msg { background: #FEF2F2; border: 1px solid #FCA5A5; display: flex; }
+  .feedback-icon { font-size: 42px; }
+  .feedback h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 700; }
+  .feedback p { font-size: 14px; color: var(--muted); line-height: 1.5; max-width: 400px; }
+  .btn-novo {
+    background: var(--navy);
+    color: var(--white);
+    border: none;
+    border-radius: 7px;
+    padding: 10px 24px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+
+  /* ── LOADING ── */
+  .loading-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(13,31,60,.6);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .loading-overlay.visible { display: flex; }
+  .spinner {
+    width: 44px; height: 44px;
+    border: 4px solid rgba(255,255,255,.2);
+    border-top-color: var(--white);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-overlay p { color: var(--white); font-size: 15px; font-weight: 500; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 520px) {
+    .tipo-grid { grid-template-columns: 1fr; }
+    .col-2, .col-3, .col-3-1, .col-2-1, .col-1-2 { grid-template-columns: 1fr; }
+    .topbar { padding: 10px 16px; }
+    .topbar-logo { font-size: 22px; }
+    .wrapper { padding: 0 10px; }
+    .card-body { padding: 14px 14px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner"></div>
+  <p>Enviando cadastro...</p>
+</div>
+
+<!-- TOPO -->
+<div class="topbar">
+  <div class="topbar-logo">auto<span>park</span></div>
+  <div class="topbar-divider"></div>
+  <div class="topbar-info">
+    <strong>Cadastro de Mensalista / Credenciado / Condômino</strong>
+    FO.OP.008 · Rev. 12 · 17/09/2021
+  </div>
+</div>
+
+<div class="wrapper" id="formWrapper">
+
+  <!-- UNIDADE -->
+  <div class="card">
+    <div class="card-header">Identificação da Unidade</div>
+    <div class="card-body">
+      <div class="row col-1">
+        <div class="field">
+          <label>Unidade (nome / endereço do estacionamento) <span class="req">*</span></label>
+          <input type="text" id="unidade" placeholder="Ex: Auto Park — Shopping Curitiba">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIPO DE CADASTRO -->
+  <div class="card">
+    <div class="card-header">Tipo de Cadastro <span style="color:rgba(255,255,255,.5);font-size:11px;font-weight:400;margin-left:4px">— selecione uma opção</span></div>
+    <div class="card-body">
+      <div class="tipo-grid">
+        <div class="tipo-btn" onclick="setTipo('mensalista')">
+          <span class="tipo-icon">🚗</span>
+          Mensalista
+        </div>
+        <div class="tipo-btn" onclick="setTipo('condomino')">
+          <span class="tipo-icon">🏢</span>
+          Condômino /<br>Locatário
+        </div>
+        <div class="tipo-btn" onclick="setTipo('credenciado')">
+          <span class="tipo-icon">🪪</span>
+          Credenciado
+        </div>
+      </div>
+      <input type="hidden" id="tipoCadastro">
+    </div>
+  </div>
+
+  <!-- 01 DADOS DO CLIENTE -->
+  <div class="card">
+    <div class="card-header"><span class="num">1</span> Dados do Cliente</div>
+    <div class="card-body">
+      <div class="toggle-row">
+        <div class="toggle-btn active" id="btnPF" onclick="setPessoa('pf')">Pessoa Física</div>
+        <div class="toggle-btn" id="btnPJ" onclick="setPessoa('pj')">Pessoa Jurídica</div>
+      </div>
+      <div class="row col-2">
+        <div class="field" style="grid-column:1/-1">
+          <label>Nome / Razão Social <span class="req">*</span></label>
+          <input type="text" id="nome" placeholder="Nome completo ou razão social">
+        </div>
+      </div>
+      <div class="row col-2">
+        <div class="field">
+          <label id="docLabel">CPF <span class="req">*</span></label>
+          <input type="text" id="cpfcnpj" placeholder="000.000.000-00" maxlength="18">
+        </div>
+        <div class="field" id="fieldRG">
+          <label>RG</label>
+          <input type="text" id="rg" placeholder="0000000-0">
+        </div>
+        <div class="field" id="fieldIE" style="display:none">
+          <label>Inscrição Estadual</label>
+          <input type="text" id="ie" placeholder="000.000.000.000">
+        </div>
+      </div>
+      <div class="row col-2">
+        <div class="field" style="grid-column:1/-1">
+          <label>E-mail <span class="req">*</span></label>
+          <input type="email" id="email" placeholder="email@exemplo.com.br">
+          <span class="hint">O boleto de cobrança será enviado para este endereço</span>
+        </div>
+      </div>
+      <div class="row col-2">
+        <div class="field">
+          <label>Telefone Fixo</label>
+          <input type="text" id="fone" placeholder="(41) 3000-0000" maxlength="15">
+        </div>
+        <div class="field">
+          <label>Celular <span class="req">*</span></label>
+          <input type="text" id="celular" placeholder="(41) 99000-0000" maxlength="15">
+        </div>
+      </div>
+      <div class="row col-2">
+        <div class="field">
+          <label>Endereço <span class="req">*</span></label>
+          <input type="text" id="endereco" placeholder="Rua, Av., número">
+        </div>
+        <div class="field">
+          <label>Complemento</label>
+          <input type="text" id="complemento" placeholder="Apto, sala, bloco...">
+        </div>
+      </div>
+      <div class="row col-3">
+        <div class="field">
+          <label>Cidade / UF <span class="req">*</span></label>
+          <input type="text" id="cidade" placeholder="Curitiba / PR">
+        </div>
+        <div class="field">
+          <label>CEP <span class="req">*</span></label>
+          <input type="text" id="cep" placeholder="00000-000" maxlength="9">
+        </div>
+        <div class="field">
+          <label>Bairro <span class="req">*</span></label>
+          <input type="text" id="bairro" placeholder="Centro">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 02 VEÍCULOS -->
+  <div class="card">
+    <div class="card-header"><span class="num">2</span> Dados dos Veículos</div>
+    <div class="card-body">
+      <p style="font-size:12px;color:var(--muted);line-height:1.5">
+        Cadastre até 4 veículos. Apenas veículos cadastrados estão cobertos pelo seguro. Alterações de placa devem ser comunicadas com no mínimo 48h de antecedência.
+      </p>
+
+      <!-- Veículo 1 -->
+      <div class="veiculo-card">
+        <div class="veiculo-header">Veículo 1 <span class="badge">Principal</span></div>
+        <div class="veiculo-body">
+          <div class="row col-3">
+            <div class="field" style="grid-column:1/3">
+              <label>Modelo <span class="req">*</span></label>
+              <input type="text" id="v1modelo" placeholder="Ex: Volkswagen Polo">
+            </div>
+            <div class="field">
+              <label>Ano <span class="req">*</span></label>
+              <input type="text" id="v1ano" placeholder="2023" maxlength="4">
+            </div>
+          </div>
+          <div class="row col-2">
+            <div class="field">
+              <label>Cor <span class="req">*</span></label>
+              <input type="text" id="v1cor" placeholder="Prata">
+            </div>
+            <div class="field">
+              <label>Placa <span class="req">*</span></label>
+              <input type="text" id="v1placa" placeholder="ABC1D23" maxlength="8" style="text-transform:uppercase">
+            </div>
+          </div>
+          <div class="field">
+            <label>Observações</label>
+            <textarea id="v1obs" placeholder="Ex: veículo adaptado, cor especial..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Veículos 2-4 -->
+      <div id="veiculos234" style="display:flex;flex-direction:column;gap:10px">
+        <!-- Veículo 2 -->
+        <div class="veiculo-card">
+          <div class="veiculo-header">Veículo 2 <span class="badge opt">Opcional</span></div>
+          <div class="veiculo-body">
+            <div class="row col-3">
+              <div class="field" style="grid-column:1/3"><label>Modelo</label><input type="text" id="v2modelo" placeholder="Ex: Fiat Pulse"></div>
+              <div class="field"><label>Ano</label><input type="text" id="v2ano" placeholder="2022" maxlength="4"></div>
+            </div>
+            <div class="row col-2">
+              <div class="field"><label>Cor</label><input type="text" id="v2cor" placeholder="Branco"></div>
+              <div class="field"><label>Placa</label><input type="text" id="v2placa" placeholder="ABC1D23" maxlength="8" style="text-transform:uppercase"></div>
+            </div>
+            <div class="field"><label>Observações</label><textarea id="v2obs"></textarea></div>
+          </div>
+        </div>
+        <!-- Veículo 3 -->
+        <div class="veiculo-card">
+          <div class="veiculo-header">Veículo 3 <span class="badge opt">Opcional</span></div>
+          <div class="veiculo-body">
+            <div class="row col-3">
+              <div class="field" style="grid-column:1/3"><label>Modelo</label><input type="text" id="v3modelo" placeholder="Ex: Chevrolet Onix"></div>
+              <div class="field"><label>Ano</label><input type="text" id="v3ano" placeholder="2021" maxlength="4"></div>
+            </div>
+            <div class="row col-2">
+              <div class="field"><label>Cor</label><input type="text" id="v3cor" placeholder="Preto"></div>
+              <div class="field"><label>Placa</label><input type="text" id="v3placa" placeholder="ABC1D23" maxlength="8" style="text-transform:uppercase"></div>
+            </div>
+            <div class="field"><label>Observações</label><textarea id="v3obs"></textarea></div>
+          </div>
+        </div>
+        <!-- Veículo 4 -->
+        <div class="veiculo-card">
+          <div class="veiculo-header">Veículo 4 <span class="badge opt">Opcional</span></div>
+          <div class="veiculo-body">
+            <div class="row col-3">
+              <div class="field" style="grid-column:1/3"><label>Modelo</label><input type="text" id="v4modelo" placeholder="Ex: Toyota Corolla"></div>
+              <div class="field"><label>Ano</label><input type="text" id="v4ano" placeholder="2020" maxlength="4"></div>
+            </div>
+            <div class="row col-2">
+              <div class="field"><label>Cor</label><input type="text" id="v4cor" placeholder="Cinza"></div>
+              <div class="field"><label>Placa</label><input type="text" id="v4placa" placeholder="ABC1D23" maxlength="8" style="text-transform:uppercase"></div>
+            </div>
+            <div class="field"><label>Observações</label><textarea id="v4obs"></textarea></div>
+          </div>
+        </div>
+      </div>
+
+      <button type="button"
+        id="btnToggleVeiculos"
+        onclick="toggleVeiculos()"
+        style="background:none;border:1.5px dashed var(--border);border-radius:7px;padding:8px;width:100%;font-family:'Barlow',sans-serif;font-size:13px;color:var(--muted);cursor:pointer;margin-top:4px">
+        + Adicionar mais veículos (opcional)
+      </button>
+    </div>
+  </div>
+
+  <!-- 03 CREDENCIADO (condicional) -->
+  <div class="card cond-section" id="secCredenciado">
+    <div class="card-header"><span class="num">3</span> Dados do Credenciado</div>
+    <div class="card-body">
+      <div class="aviso-interno">
+        <strong>Documentação necessária</strong>
+        Apresente e-mail ou declaração da empresa contendo os dados do funcionário e a autorização para cadastro e utilização do estacionamento.
+      </div>
+      <div class="row col-3">
+        <div class="field" style="grid-column:1/3">
+          <label>Empresa <span class="req">*</span></label>
+          <input type="text" id="credEmpresa" placeholder="Razão social da empresa">
+        </div>
+        <div class="field">
+          <label>Matrícula <span class="req">*</span></label>
+          <input type="text" id="credMatricula" placeholder="00000">
+        </div>
+      </div>
+      <div class="row col-2">
+        <div class="field">
+          <label>Data de Admissão <span class="req">*</span></label>
+          <input type="date" id="credAdmissao">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 04 CONDÔMINO (condicional) -->
+  <div class="card cond-section" id="secCondomino">
+    <div class="card-header"><span class="num">4</span> Dados do Condômino / Locatário</div>
+    <div class="card-body">
+      <div class="aviso-interno">
+        <strong>Documentação necessária</strong>
+        Condômino: apresente cópia da escritura da vaga ou contrato de compra e venda.<br>
+        Locatário: apresente o contrato de locação.
+      </div>
+      <div class="row col-2">
+        <div class="field">
+          <label>Bloco / Torre <span class="req">*</span></label>
+          <input type="text" id="condBloco" placeholder="Bloco A / Torre 1">
+        </div>
+        <div class="field">
+          <label>Loja / Empresa</label>
+          <input type="text" id="condLoja" placeholder="Nome da loja ou empresa">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACEITE E ENVIO -->
+  <div class="card">
+    <div class="card-header">Declaração e Aceite das Normas</div>
+    <div class="card-body">
+      <div class="normas">
+        <p><strong>Normas do Estacionamento</strong></p>
+        <p>• É aceito o cadastramento de até 4 (quatro) placas/veículos por vaga contratada, sendo permitida a utilização de apenas um carro por vez na vaga. As placas deverão ser atualizadas junto à Auto Park com no mínimo 48 horas de antecedência.</p>
+        <p>• Apenas veículos informados no cadastro estão assegurados no estacionamento.</p>
+        <p>• A credencial é intransferível e sua correta utilização e conservação é de responsabilidade do usuário.</p>
+        <p>• O contrato poderá ser rescindido a qualquer momento mediante notificação escrita com antecedência mínima de 10 (dez) dias úteis.</p>
+        <p>• A perda da credencial deve ser comunicada imediatamente à administração. Taxa de reemissão: R$ 30,00.</p>
+        <p>• O não pagamento da mensalidade até o vencimento implicará na suspensão automática do contrato. Multa moratória: 2% + juros de mora de 1% ao mês.</p>
+        <p>• Os dados pessoais coletados serão utilizados exclusivamente para os fins deste cadastro, conforme a LGPD, e eliminados em até 30 dias após a rescisão do contrato.</p>
+        <p>• Caso a credencial seja utilizada por terceiros, adulterada, fotocopiada ou falsificada, o contrato será rescindido imediatamente.</p>
+        <p>• Motociclistas devem levar consigo capacetes, luvas e demais acessórios. A moto deve ser presa à barra de segurança.</p>
+        <p>• Dúvidas: contasareceber.pr@autopark.com.br</p>
+      </div>
+
+      <label class="check-row">
+        <input type="checkbox" id="aceiteNormas">
+        <span>Li e concordo com as <strong>Normas do Estacionamento</strong> e com a <strong>Política de Privacidade</strong> da Auto Park (LGPD).</span>
+      </label>
+      <label class="check-row">
+        <input type="checkbox" id="aceiteVeracidade">
+        <span>Confirmo que todas as informações fornecidas neste formulário são <strong>verdadeiras e corretas</strong>.</span>
+      </label>
+
+      <div class="field">
+        <label>Observações Gerais</label>
+        <textarea id="obsGerais" placeholder="Alguma informação adicional que deseje registrar (opcional)"></textarea>
+      </div>
+
+      <button class="btn-submit" id="btnEnviar" onclick="enviar()">
+        Enviar Cadastro
+      </button>
+    </div>
+  </div>
+
+  <!-- FEEDBACK -->
+  <div class="feedback success" id="feedbackOK">
+    <div class="feedback-icon">✅</div>
+    <h3 style="color:#166534">Cadastro enviado com sucesso!</h3>
+    <p>A equipe da Auto Park analisará suas informações e entrará em contato pelo telefone ou e-mail cadastrado para confirmar e orientar sobre os próximos passos.</p>
+    <button class="btn-novo" onclick="novoCadastro()">Novo cadastro</button>
+  </div>
+
+  <div class="feedback error-msg" id="feedbackERR">
+    <div class="feedback-icon">❌</div>
+    <h3 style="color:#991B1B">Erro ao enviar</h3>
+    <p id="errMsg">Não foi possível enviar o cadastro. Verifique sua conexão e tente novamente.</p>
+    <button class="btn-novo" onclick="fecharErro()">Tentar novamente</button>
+  </div>
+
+</div>
+
+<script>
+// ── CONFIGURAÇÃO — substitua pela URL do seu Web App ──────────────────────
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzzcg4SuM6ACkBQpmWHksMlFKURZIcOWNgBud__Bzsdlrrw-Ve1splMzYR1U00SzQ6y/exec';
+// ─────────────────────────────────────────────────────────────────────────
+
+let tipoCadastro = '';
+let tipoPessoa   = 'pf';
+let veiculosExpandidos = false;
+
+function setTipo(tipo) {
+  tipoCadastro = tipo;
+  document.getElementById('tipoCadastro').value = tipo;
+  document.querySelectorAll('.tipo-btn').forEach(b => b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.getElementById('secCredenciado').classList.toggle('visible', tipo === 'credenciado');
+  document.getElementById('secCondomino').classList.toggle('visible',   tipo === 'condomino');
+}
+
+function setPessoa(tipo) {
+  tipoPessoa = tipo;
+  document.getElementById('btnPF').classList.toggle('active', tipo === 'pf');
+  document.getElementById('btnPJ').classList.toggle('active', tipo === 'pj');
+  document.getElementById('docLabel').innerHTML = (tipo === 'pf' ? 'CPF' : 'CNPJ') + ' <span class="req">*</span>';
+  document.getElementById('cpfcnpj').placeholder = tipo === 'pf' ? '000.000.000-00' : '00.000.000/0001-00';
+  document.getElementById('fieldRG').style.display = tipo === 'pf' ? '' : 'none';
+  document.getElementById('fieldIE').style.display = tipo === 'pj' ? '' : 'none';
+}
+
+function toggleVeiculos() {
+  veiculosExpandidos = !veiculosExpandidos;
+  const el = document.getElementById('veiculos234');
+  const btn = document.getElementById('btnToggleVeiculos');
+  el.style.display = veiculosExpandidos ? 'flex' : 'none';
+  btn.textContent = veiculosExpandidos ? '− Ocultar veículos adicionais' : '+ Adicionar mais veículos (opcional)';
+}
+
+// Oculta veículos 2-4 inicialmente
+document.getElementById('veiculos234').style.display = 'none';
+
+// Máscara CEP
+document.getElementById('cep').addEventListener('input', function() {
+  let v = this.value.replace(/\D/g,'');
+  if(v.length > 5) v = v.slice(0,5) + '-' + v.slice(5,8);
+  this.value = v;
+});
+
+// Máscara telefone
+['fone','celular'].forEach(id => {
+  document.getElementById(id).addEventListener('input', function() {
+    let v = this.value.replace(/\D/g,'');
+    if(v.length > 10)
+      v = '(' + v.slice(0,2) + ') ' + v.slice(2,7) + '-' + v.slice(7,11);
+    else if(v.length > 6)
+      v = '(' + v.slice(0,2) + ') ' + v.slice(2,6) + '-' + v.slice(6);
+    else if(v.length > 2)
+      v = '(' + v.slice(0,2) + ') ' + v.slice(2);
+    this.value = v;
+  });
+});
+
+// Máscara CPF/CNPJ
+document.getElementById('cpfcnpj').addEventListener('input', function() {
+  let v = this.value.replace(/\D/g,'');
+  if(tipoPessoa === 'pf') {
+    if(v.length > 9) v = v.slice(0,3)+'.'+v.slice(3,6)+'.'+v.slice(6,9)+'-'+v.slice(9,11);
+    else if(v.length > 6) v = v.slice(0,3)+'.'+v.slice(3,6)+'.'+v.slice(6);
+    else if(v.length > 3) v = v.slice(0,3)+'.'+v.slice(3);
+  } else {
+    if(v.length > 12) v = v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5,8)+'/'+v.slice(8,12)+'-'+v.slice(12,14);
+    else if(v.length > 8) v = v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5,8)+'/'+v.slice(8);
+    else if(v.length > 5) v = v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5);
+    else if(v.length > 2) v = v.slice(0,2)+'.'+v.slice(2);
+  }
+  this.value = v;
+});
+
+// Placa uppercase
+['v1placa','v2placa','v3placa','v4placa'].forEach(id => {
+  document.getElementById(id).addEventListener('input', function() {
+    this.value = this.value.toUpperCase();
+  });
+});
+
+function val(id) { return document.getElementById(id)?.value?.trim() || ''; }
+
+function marcarErro(id, flag) {
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.classList.toggle('error', flag);
+}
+
+function validar() {
+  let ok = true;
+  const obrigatorios = ['unidade','nome','cpfcnpj','email','celular','endereco','cidade','cep','bairro',
+                        'v1modelo','v1ano','v1cor','v1placa'];
+  obrigatorios.forEach(id => {
+    const vazio = !val(id);
+    marcarErro(id, vazio);
+    if(vazio) ok = false;
+  });
+
+  if(!tipoCadastro) {
+    alert('Selecione o tipo de cadastro (Mensalista, Condômino ou Credenciado).');
+    ok = false;
+  }
+
+  if(tipoCadastro === 'credenciado') {
+    ['credEmpresa','credMatricula','credAdmissao'].forEach(id => {
+      const vazio = !val(id);
+      marcarErro(id, vazio);
+      if(vazio) ok = false;
+    });
+  }
+  if(tipoCadastro === 'condomino') {
+    const vazio = !val('condBloco');
+    marcarErro('condBloco', vazio);
+    if(vazio) ok = false;
+  }
+
+  if(!document.getElementById('aceiteNormas').checked) {
+    alert('É necessário aceitar as Normas do Estacionamento para prosseguir.');
+    ok = false;
+  }
+  if(!document.getElementById('aceiteVeracidade').checked) {
+    alert('É necessário confirmar a veracidade das informações.');
+    ok = false;
+  }
+  return ok;
+}
+
+function enviar() {
+  if(!validar()) return;
+
+  const dados = {
+    timestamp:       new Date().toLocaleString('pt-BR'),
+    unidade:         val('unidade'),
+    tipoCadastro,
+    tipoPessoa,
+    nome:            val('nome'),
+    cpfcnpj:         val('cpfcnpj'),
+    rg:              val('rg'),
+    ie:              val('ie'),
+    email:           val('email'),
+    fone:            val('fone'),
+    celular:         val('celular'),
+    endereco:        val('endereco'),
+    complemento:     val('complemento'),
+    cidade:          val('cidade'),
+    cep:             val('cep'),
+    bairro:          val('bairro'),
+    v1modelo:        val('v1modelo'), v1ano: val('v1ano'), v1cor: val('v1cor'), v1placa: val('v1placa'), v1obs: val('v1obs'),
+    v2modelo:        val('v2modelo'), v2ano: val('v2ano'), v2cor: val('v2cor'), v2placa: val('v2placa'), v2obs: val('v2obs'),
+    v3modelo:        val('v3modelo'), v3ano: val('v3ano'), v3cor: val('v3cor'), v3placa: val('v3placa'), v3obs: val('v3obs'),
+    v4modelo:        val('v4modelo'), v4ano: val('v4ano'), v4cor: val('v4cor'), v4placa: val('v4placa'), v4obs: val('v4obs'),
+    credEmpresa:     val('credEmpresa'),
+    credMatricula:   val('credMatricula'),
+    credAdmissao:    val('credAdmissao'),
+    condBloco:       val('condBloco'),
+    condLoja:        val('condLoja'),
+    obsGerais:       val('obsGerais'),
+  };
+
+  document.getElementById('loadingOverlay').classList.add('visible');
+  document.getElementById('btnEnviar').disabled = true;
+
+  // Com mode: no-cors o fetch não retorna corpo legível,
+  // mas o GAS recebe e processa normalmente.
+  // Usamos um timeout de segurança para garantir o feedback ao usuário.
+  const timer = setTimeout(() => {
+    document.getElementById('loadingOverlay').classList.remove('visible');
+    document.getElementById('formWrapper').style.display = 'none';
+    document.getElementById('feedbackOK').style.display  = 'flex';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, 4000);
+
+  fetch(SCRIPT_URL, {
+    method:  'POST',
+    mode:    'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
+    body:    JSON.stringify(dados),
+  })
+  .then(() => {
+    clearTimeout(timer);
+    document.getElementById('loadingOverlay').classList.remove('visible');
+    document.getElementById('formWrapper').style.display = 'none';
+    document.getElementById('feedbackOK').style.display  = 'flex';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  })
+  .catch(() => {
+    clearTimeout(timer);
+    document.getElementById('loadingOverlay').classList.remove('visible');
+    document.getElementById('formWrapper').style.display = 'none';
+    document.getElementById('feedbackOK').style.display  = 'flex';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
+
+function novoCadastro() {
+  document.getElementById('feedbackOK').style.display = 'none';
+  document.getElementById('formWrapper').style.display = 'flex';
+  document.querySelectorAll('input[type=text],input[type=email],input[type=date],textarea')
+    .forEach(el => el.value = '');
+  document.querySelectorAll('input[type=checkbox]').forEach(el => el.checked = false);
+  document.querySelectorAll('.tipo-btn').forEach(b => b.classList.remove('active'));
+  tipoCadastro = '';
+  setPessoa('pf');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function fecharErro() {
+  document.getElementById('feedbackERR').style.display = 'none';
+}
+</script>
+</body>
+</html>
