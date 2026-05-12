@@ -710,18 +710,11 @@ function enviar(){
       .withFailureHandler(function(err){ onErro(err&&err.message?err.message:String(err||'Erro desconhecido.')); })
       .gravarNaPlanilha(dados);
   } else {
-    // GitHub Pages — no-cors é o único modo que funciona cross-origin com GAS.
-    // A resposta é opaca (não legível), mas o dado chega ao servidor normalmente.
-    fetch(GAS_URL, {
-      method:  'POST',
-      mode:    'no-cors',
-      headers: { 'Content-Type': 'text/plain' },
-      body:    JSON.stringify(dados),
-    })
-    .then(function() { onSucesso(); })
-    .catch(function(err) {
-      onErro(err.message || 'Erro de conexão. Verifique sua internet e tente novamente.');
-    });
+    // GitHub Pages — envia os dados como parâmetro GET (único método cross-origin confiável com GAS)
+    var url = GAS_URL + '?dados=' + encodeURIComponent(JSON.stringify(dados));
+    var img = new Image();
+    img.onload = img.onerror = function() { onSucesso(); };
+    img.src = url;
   }
 }
 
