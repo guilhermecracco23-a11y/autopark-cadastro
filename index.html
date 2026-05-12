@@ -535,16 +535,19 @@ function carregarUnidades() {
       })
       .obterUnidades();
   } else {
-    // Fora do Apps Script (GitHub Pages) busca via fetch com ?action=unidades
-    fetch(GAS_URL + '?action=unidades', {
-      method: 'GET',
-      redirect: 'follow',
-    })
+    // GitHub Pages não consegue chamar o GAS diretamente por CORS + redirecionamento.
+    // Usamos allorigins.win como proxy transparente.
+    var proxyUrl = 'https://api.allorigins.win/get?url=' +
+      encodeURIComponent(GAS_URL + '?action=unidades');
+
+    fetch(proxyUrl)
       .then(function(r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.json();
       })
-      .then(function(data) {
+      .then(function(proxy) {
+        // allorigins devolve { contents: '...json string...' }
+        var data = JSON.parse(proxy.contents);
         if(data && data.status === 'ok') {
           preencherSelect(data.unidades);
         } else {
@@ -757,17 +760,15 @@ function enviar(){
       .withFailureHandler(function(err){ onErro(err&&err.message?err.message:String(err||'Erro desconhecido.')); })
       .gravarNaPlanilha(dados);
   } else {
-    // GitHub Pages — envia via fetch POST para o Web App
+    // GitHub Pages — usa FormData (simple request) para evitar preflight CORS
+    var formData = new FormData();
+    formData.append('dados', JSON.stringify(dados));
+
     fetch(GAS_URL, {
-      method:  'POST',
-      mode:    'no-cors',
-      headers: {'Content-Type': 'text/plain'},
-      body:    JSON.stringify(dados),
+      method: 'POST',
+      body:   formData,
     })
-    .then(function() {
-      // no-cors não retorna corpo legível; consideramos sucesso se não houve erro de rede
-      onSucesso();
-    })
+    .then(function() { onSucesso(); })
     .catch(function(err) {
       onErro(err.message || 'Erro de conexão. Verifique sua internet e tente novamente.');
     });
