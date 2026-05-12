@@ -499,8 +499,12 @@ var tipoCadastro = '';
 var tipoPessoa = 'pf';
 var veiculosExpandidos = false;
 
-// URL do Web App do Apps Script — usada pelo GitHub Pages para buscar unidades e enviar cadastros
+// URL do Web App do Apps Script — usada pelo GitHub Pages para enviar cadastros
 var GAS_URL = 'https://script.google.com/macros/s/AKfycbzzcg4SuM6ACkBQpmWHksMlFKURZIcOWNgBud__Bzsdlrrw-Ve1splMzYR1U00SzQ6y/exec';
+
+// URL do proxy separado para buscar unidades (script minimalista sem redirecionamento)
+// Após criar e publicar o proxy_unidades.gs, substitua o valor abaixo pela URL gerada
+var PROXY_URL = 'https://script.google.com/macros/s/AKfycbzs2dFDw3LmlOjqSgftjq6VG-fldKNQUW173hiC_o2CAb4lwDqp16wYPu2QL2fbzek/exec';
 
 function carregarUnidades() {
   var select = document.getElementById('unidade');
@@ -535,19 +539,13 @@ function carregarUnidades() {
       })
       .obterUnidades();
   } else {
-    // GitHub Pages não consegue chamar o GAS diretamente por CORS + redirecionamento.
-    // Usamos allorigins.win como proxy transparente.
-    var proxyUrl = 'https://api.allorigins.win/get?url=' +
-      encodeURIComponent(GAS_URL + '?action=unidades');
-
-    fetch(proxyUrl)
+    // GitHub Pages — busca unidades via proxy dedicado (sem redirecionamento)
+    fetch(PROXY_URL)
       .then(function(r) {
         if (!r.ok) throw new Error('HTTP ' + r.status);
         return r.json();
       })
-      .then(function(proxy) {
-        // allorigins devolve { contents: '...json string...' }
-        var data = JSON.parse(proxy.contents);
+      .then(function(data) {
         if(data && data.status === 'ok') {
           preencherSelect(data.unidades);
         } else {
