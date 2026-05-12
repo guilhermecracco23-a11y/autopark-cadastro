@@ -8,361 +8,150 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --navy:   #0D1F3C;
-    --red:    #C8102E;
-    --white:  #FFFFFF;
-    --gray:   #F2F4F7;
-    --border: #CBD2DC;
-    --text:   #1A2333;
-    --muted:  #6B7A90;
-    --input-h: 38px;
+    --navy: #0D1F3C; --red: #C8102E; --white: #FFFFFF;
+    --gray: #F2F4F7; --border: #CBD2DC; --text: #1A2333;
+    --muted: #6B7A90; --input-h: 38px;
   }
-
   html { scroll-behavior: smooth; }
+  body { font-family:'Barlow',sans-serif; font-size:14px; color:var(--text); background:var(--gray); min-height:100vh; padding:0 0 60px; }
 
-  body {
-    font-family: 'Barlow', sans-serif;
-    font-size: 14px;
-    color: var(--text);
-    background: var(--gray);
-    min-height: 100vh;
-    padding: 0 0 60px;
-  }
+  .topbar { background:var(--navy); padding:14px 24px; display:flex; align-items:center; gap:16px; position:sticky; top:0; z-index:100; box-shadow:0 2px 8px rgba(0,0,0,.25); }
+  .topbar-logo { display:flex; align-items:center; flex-shrink:0; line-height:1; }
+  .topbar-logo-img { display:block; height:38px; width:auto; object-fit:contain; }
+  .topbar-divider { width:1px; height:28px; background:rgba(255,255,255,.2); }
+  .topbar-info { color:rgba(255,255,255,.75); font-size:12px; line-height:1.4; }
+  .topbar-info strong { color:var(--white); display:block; font-size:13px; }
 
-  /* ── TOPO ── */
-  .topbar {
-    background: var(--navy);
-    padding: 14px 24px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 2px 8px rgba(0,0,0,.25);
-  }
-  .topbar-logo {
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 26px;
-    font-weight: 800;
-    color: var(--white);
-    letter-spacing: -0.5px;
-    line-height: 1;
-  }
-  .topbar-logo span { color: var(--red); }
-  .topbar-divider { width: 1px; height: 28px; background: rgba(255,255,255,.2); }
-  .topbar-info { color: rgba(255,255,255,.75); font-size: 12px; line-height: 1.4; }
-  .topbar-info strong { color: var(--white); display: block; font-size: 13px; }
+  .wrapper { max-width:720px; margin:28px auto 0; padding:0 16px; display:flex; flex-direction:column; gap:16px; }
+  .card { background:var(--white); border-radius:10px; border:1px solid var(--border); overflow:hidden; }
+  .card-header { background:var(--navy); color:var(--white); font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:700; letter-spacing:.8px; text-transform:uppercase; padding:7px 16px; display:flex; align-items:center; gap:8px; }
+  .card-header .num { background:var(--red); border-radius:50%; width:20px; height:20px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; flex-shrink:0; }
+  .card-body { padding:18px 20px; display:flex; flex-direction:column; gap:14px; }
 
-  /* ── WRAPPER ── */
-  .wrapper {
-    max-width: 720px;
-    margin: 28px auto 0;
-    padding: 0 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
+  .tipo-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  .tipo-btn { border:2px solid var(--border); border-radius:8px; padding:12px 10px; text-align:center; cursor:pointer; font-family:'Barlow Condensed',sans-serif; font-size:14px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.4px; transition:all .18s; user-select:none; background:var(--white); }
+  .tipo-btn:hover { border-color:var(--navy); color:var(--navy); }
+  .tipo-btn.active { border-color:var(--navy); background:var(--navy); color:var(--white); }
+  .tipo-btn.active .tipo-icon { filter:brightness(10); }
+  .tipo-icon { font-size:20px; display:block; margin-bottom:4px; }
+  .tipo-grid.error-highlight .tipo-btn { border-color:var(--red); }
 
-  /* ── CARD DE SEÇÃO ── */
-  .card {
-    background: var(--white);
-    border-radius: 10px;
-    border: 1px solid var(--border);
-    overflow: hidden;
-  }
-  .card-header {
-    background: var(--navy);
-    color: var(--white);
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    letter-spacing: .8px;
-    text-transform: uppercase;
-    padding: 7px 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .card-header .num {
-    background: var(--red);
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    font-weight: 800;
-    flex-shrink: 0;
-  }
-  .card-body { padding: 18px 20px; display: flex; flex-direction: column; gap: 14px; }
+  .toggle-row { display:flex; gap:8px; }
+  .toggle-btn { flex:1; border:1.5px solid var(--border); border-radius:6px; padding:7px; text-align:center; cursor:pointer; font-size:13px; font-weight:600; color:var(--muted); transition:all .15s; background:var(--white); }
+  .toggle-btn:hover { border-color:var(--navy); color:var(--navy); }
+  .toggle-btn.active { border-color:var(--red); background:#FEF2F2; color:var(--red); }
 
-  /* ── TIPO CADASTRO ── */
-  .tipo-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-  }
-  .tipo-btn {
-    border: 2px solid var(--border);
-    border-radius: 8px;
-    padding: 12px 10px;
-    text-align: center;
-    cursor: pointer;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: .4px;
-    transition: all .18s;
-    user-select: none;
-    background: var(--white);
-  }
-  .tipo-btn:hover { border-color: var(--navy); color: var(--navy); }
-  .tipo-btn.active { border-color: var(--navy); background: var(--navy); color: var(--white); }
-  .tipo-btn.active .tipo-icon { filter: brightness(10); }
-  .tipo-icon { font-size: 20px; display: block; margin-bottom: 4px; }
+  .row { display:grid; gap:12px; }
+  .col-1 { grid-template-columns:1fr; }
+  .col-2 { grid-template-columns:1fr 1fr; }
+  .col-3 { grid-template-columns:1fr 1fr 1fr; }
 
-  /* ── PF / PJ toggle ── */
-  .toggle-row {
-    display: flex;
-    gap: 8px;
-  }
-  .toggle-btn {
-    flex: 1;
-    border: 1.5px solid var(--border);
-    border-radius: 6px;
-    padding: 7px;
-    text-align: center;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--muted);
-    transition: all .15s;
-    background: var(--white);
-  }
-  .toggle-btn:hover { border-color: var(--navy); color: var(--navy); }
-  .toggle-btn.active { border-color: var(--red); background: #FEF2F2; color: var(--red); }
+  .field { display:flex; flex-direction:column; gap:4px; }
+  .field label { font-size:11px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.5px; }
+  .field label .req { color:var(--red); margin-left:2px; }
+  .field input, .field select, .field textarea { height:var(--input-h); border:1.5px solid var(--border); border-radius:6px; padding:0 10px; font-family:'Barlow',sans-serif; font-size:14px; color:var(--text); background:var(--white); outline:none; transition:border-color .15s; width:100%; }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color:var(--navy); }
+  .field input.error, .field select.error { border-color:var(--red); background:#FEF2F2; }
+  .field textarea { height:70px; padding:8px 10px; resize:vertical; line-height:1.4; }
+  .field .hint { font-size:10.5px; color:var(--muted); margin-top:1px; }
+  .field .field-error-msg { font-size:10.5px; color:var(--red); margin-top:1px; display:none; align-items:center; gap:3px; }
+  .field .field-error-msg.visible { display:flex; }
 
-  /* ── GRID DE CAMPOS ── */
-  .row { display: grid; gap: 12px; }
-  .col-1 { grid-template-columns: 1fr; }
-  .col-2 { grid-template-columns: 1fr 1fr; }
-  .col-3 { grid-template-columns: 1fr 1fr 1fr; }
-  .col-3-1 { grid-template-columns: 3fr 1fr; }
-  .col-2-1 { grid-template-columns: 2fr 1fr; }
-  .col-1-2 { grid-template-columns: 1fr 2fr; }
+  .veiculo-card { border:1px solid var(--border); border-radius:8px; overflow:hidden; }
+  .veiculo-header { background:var(--gray); padding:6px 12px; font-size:11px; font-weight:700; color:var(--navy); text-transform:uppercase; letter-spacing:.4px; display:flex; align-items:center; justify-content:space-between; }
+  .veiculo-header .badge { background:var(--navy); color:var(--white); border-radius:4px; padding:1px 7px; font-size:10px; }
+  .veiculo-header .badge.opt { background:var(--border); color:var(--muted); }
+  .veiculo-body { padding:12px; display:flex; flex-direction:column; gap:10px; }
 
-  /* ── CAMPO ── */
-  .field { display: flex; flex-direction: column; gap: 4px; }
-  .field label {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: .5px;
-  }
-  .field label .req { color: var(--red); margin-left: 2px; }
-  .field input,
-  .field select,
-  .field textarea {
-    height: var(--input-h);
-    border: 1.5px solid var(--border);
-    border-radius: 6px;
-    padding: 0 10px;
-    font-family: 'Barlow', sans-serif;
-    font-size: 14px;
-    color: var(--text);
-    background: var(--white);
-    outline: none;
-    transition: border-color .15s;
-    width: 100%;
-  }
-  .field input:focus,
-  .field select:focus,
-  .field textarea:focus { border-color: var(--navy); }
-  .field input.error,
-  .field select.error { border-color: var(--red); background: #FEF2F2; }
-  .field textarea { height: 70px; padding: 8px 10px; resize: vertical; line-height: 1.4; }
-  .field .hint { font-size: 10.5px; color: var(--muted); margin-top: 1px; }
+  .cond-section { display:none; }
+  .cond-section.visible { display:block; }
 
-  /* ── VEÍCULOS ── */
-  .veiculo-card {
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    overflow: hidden;
-  }
-  .veiculo-header {
-    background: var(--gray);
-    padding: 6px 12px;
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--navy);
-    text-transform: uppercase;
-    letter-spacing: .4px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .veiculo-header .badge {
-    background: var(--navy);
-    color: var(--white);
-    border-radius: 4px;
-    padding: 1px 7px;
-    font-size: 10px;
-  }
-  .veiculo-header .badge.opt {
-    background: var(--border);
-    color: var(--muted);
-  }
-  .veiculo-body { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+  .aviso-interno { background:#FFF8E1; border:1px solid #F9C825; border-radius:8px; padding:10px 14px; font-size:12px; color:#7A5C00; line-height:1.5; }
+  .aviso-interno strong { display:block; margin-bottom:2px; font-size:12px; }
 
-  /* ── SEÇÕES CONDICIONAIS ── */
-  .cond-section { display: none; }
-  .cond-section.visible { display: block; }
+  .normas { background:var(--gray); border:1px solid var(--border); border-radius:8px; padding:14px; font-size:12px; line-height:1.65; color:var(--text); max-height:200px; overflow-y:auto; }
+  .normas p { margin-bottom:6px; }
+  .normas strong { font-weight:600; }
 
-  /* ── AVISO INTERNO ── */
-  .aviso-interno {
-    background: #FFF8E1;
-    border: 1px solid #F9C825;
-    border-radius: 8px;
-    padding: 10px 14px;
-    font-size: 12px;
-    color: #7A5C00;
-    line-height: 1.5;
-  }
-  .aviso-interno strong { display: block; margin-bottom: 2px; font-size: 12px; }
+  .check-row { display:flex; align-items:flex-start; gap:10px; cursor:pointer; }
+  .check-row input[type="checkbox"] { width:18px; height:18px; accent-color:var(--navy); flex-shrink:0; margin-top:1px; cursor:pointer; }
+  .check-row span { font-size:13px; line-height:1.5; }
+  .check-row.error-check span { color:var(--red); }
+  .check-row.error-check input { outline:2px solid var(--red); border-radius:2px; }
 
-  /* ── NORMAS ── */
-  .normas {
-    background: var(--gray);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 14px;
-    font-size: 12px;
-    line-height: 1.65;
-    color: var(--text);
-    max-height: 200px;
-    overflow-y: auto;
-  }
-  .normas p { margin-bottom: 6px; }
-  .normas strong { font-weight: 600; }
+  .btn-submit { background:var(--red); color:var(--white); border:none; border-radius:8px; padding:14px; font-family:'Barlow Condensed',sans-serif; font-size:18px; font-weight:700; letter-spacing:.5px; text-transform:uppercase; cursor:pointer; width:100%; transition:background .18s,transform .1s; margin-top:4px; }
+  .btn-submit:hover { background:#A50D24; }
+  .btn-submit:active { transform:scale(.99); }
+  .btn-submit:disabled { background:var(--border); color:var(--muted); cursor:not-allowed; }
 
-  /* ── ACEITE ── */
-  .check-row {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    cursor: pointer;
-  }
-  .check-row input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    accent-color: var(--navy);
-    flex-shrink: 0;
-    margin-top: 1px;
-    cursor: pointer;
-  }
-  .check-row span { font-size: 13px; line-height: 1.5; }
+  .feedback { display:none; border-radius:10px; padding:32px 24px; text-align:center; flex-direction:column; align-items:center; gap:12px; }
+  .feedback.success  { background:#F0FDF4; border:1px solid #86EFAC; display:flex; }
+  .feedback.error-msg{ background:#FEF2F2; border:1px solid #FCA5A5; display:flex; }
+  .feedback-icon { font-size:42px; }
+  .feedback h3 { font-family:'Barlow Condensed',sans-serif; font-size:22px; font-weight:700; }
+  .feedback p  { font-size:14px; color:var(--muted); line-height:1.5; max-width:400px; }
+  .btn-novo { background:var(--navy); color:var(--white); border:none; border-radius:7px; padding:10px 24px; font-family:'Barlow Condensed',sans-serif; font-size:16px; font-weight:700; cursor:pointer; margin-top:8px; }
 
-  /* ── BOTÃO ENVIAR ── */
-  .btn-submit {
-    background: var(--red);
-    color: var(--white);
-    border: none;
-    border-radius: 8px;
-    padding: 14px;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: .5px;
-    text-transform: uppercase;
-    cursor: pointer;
-    width: 100%;
-    transition: background .18s, transform .1s;
-    margin-top: 4px;
-  }
-  .btn-submit:hover { background: #A50D24; }
-  .btn-submit:active { transform: scale(.99); }
-  .btn-submit:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
+  .loading-overlay { display:none; position:fixed; inset:0; background:rgba(13,31,60,.6); z-index:200; align-items:center; justify-content:center; flex-direction:column; gap:16px; }
+  .loading-overlay.visible { display:flex; }
+  .spinner { width:44px; height:44px; border:4px solid rgba(255,255,255,.2); border-top-color:var(--white); border-radius:50%; animation:spin .8s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .loading-overlay p { color:var(--white); font-size:15px; font-weight:500; }
 
-  /* ── FEEDBACK ── */
-  .feedback {
-    display: none;
-    border-radius: 10px;
-    padding: 32px 24px;
-    text-align: center;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-  }
-  .feedback.success { background: #F0FDF4; border: 1px solid #86EFAC; display: flex; }
-  .feedback.error-msg { background: #FEF2F2; border: 1px solid #FCA5A5; display: flex; }
-  .feedback-icon { font-size: 42px; }
-  .feedback h3 { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 700; }
-  .feedback p { font-size: 14px; color: var(--muted); line-height: 1.5; max-width: 400px; }
-  .btn-novo {
-    background: var(--navy);
-    color: var(--white);
-    border: none;
-    border-radius: 7px;
-    padding: 10px 24px;
-    font-family: 'Barlow Condensed', sans-serif;
-    font-size: 16px;
-    font-weight: 700;
-    cursor: pointer;
-    margin-top: 8px;
-  }
+  #toast-container { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); z-index:9999; display:flex; flex-direction:column; align-items:center; gap:10px; pointer-events:none; width:min(520px,calc(100vw - 32px)); }
+  .toast { width:100%; border-radius:10px; padding:14px 16px 14px 14px; display:flex; align-items:flex-start; gap:12px; pointer-events:all; box-shadow:0 8px 32px rgba(0,0,0,.18),0 2px 8px rgba(0,0,0,.10); animation:toastIn .28s cubic-bezier(.34,1.56,.64,1) forwards; position:relative; overflow:hidden; }
+  .toast.toast-exit { animation:toastOut .22s ease-in forwards; }
+  .toast-warning { background:#1A2333; border-left:4px solid #F59E0B; color:#fff; }
+  .toast-error   { background:#1A2333; border-left:4px solid var(--red); color:#fff; }
+  .toast-info    { background:#1A2333; border-left:4px solid #3B82F6; color:#fff; }
+  .toast-icon  { font-size:20px; flex-shrink:0; line-height:1.3; }
+  .toast-body  { flex:1; }
+  .toast-title { font-family:'Barlow Condensed',sans-serif; font-size:14px; font-weight:700; letter-spacing:.3px; text-transform:uppercase; margin-bottom:3px; color:#fff; }
+  .toast-msg   { font-size:13px; line-height:1.45; color:rgba(255,255,255,.82); }
+  .toast-close { background:none; border:none; color:rgba(255,255,255,.45); font-size:18px; cursor:pointer; padding:0 2px; line-height:1; flex-shrink:0; transition:color .15s; align-self:flex-start; }
+  .toast-close:hover { color:rgba(255,255,255,.9); }
+  .toast-progress { position:absolute; bottom:0; left:0; height:3px; border-radius:0 0 0 10px; animation:toastProgress linear forwards; }
+  .toast-warning .toast-progress { background:#F59E0B; }
+  .toast-error   .toast-progress { background:var(--red); }
+  .toast-info    .toast-progress { background:#3B82F6; }
+  @keyframes toastIn  { from{opacity:0;transform:translateY(20px) scale(.95)} to{opacity:1;transform:translateY(0) scale(1)} }
+  @keyframes toastOut { from{opacity:1;transform:translateY(0) scale(1)} to{opacity:0;transform:translateY(8px) scale(.96)} }
+  @keyframes toastProgress { from{width:100%} to{width:0%} }
 
-  /* ── LOADING ── */
-  .loading-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(13,31,60,.6);
-    z-index: 200;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 16px;
-  }
-  .loading-overlay.visible { display: flex; }
-  .spinner {
-    width: 44px; height: 44px;
-    border: 4px solid rgba(255,255,255,.2);
-    border-top-color: var(--white);
-    border-radius: 50%;
-    animation: spin .8s linear infinite;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .loading-overlay p { color: var(--white); font-size: 15px; font-weight: 500; }
+  .hp-field { position:absolute !important; left:-10000px !important; top:auto !important; width:1px !important; height:1px !important; overflow:hidden !important; opacity:0 !important; pointer-events:none !important; }
 
-  /* ── RESPONSIVE ── */
-  @media (max-width: 520px) {
-    .tipo-grid { grid-template-columns: 1fr; }
-    .col-2, .col-3, .col-3-1, .col-2-1, .col-1-2 { grid-template-columns: 1fr; }
-    .topbar { padding: 10px 16px; }
-    .topbar-logo { font-size: 22px; }
-    .wrapper { padding: 0 10px; }
-    .card-body { padding: 14px 14px; }
+  @media (max-width:520px) {
+    .tipo-grid { grid-template-columns:1fr; }
+    .col-2, .col-3 { grid-template-columns:1fr; }
+    .topbar { padding:10px 16px; }
+    .topbar-logo-img { height:32px; }
+    .wrapper { padding:0 10px; }
+    .card-body { padding:14px 14px; }
+    #toast-container { bottom:16px; }
   }
 </style>
 </head>
 <body>
 
-<!-- LOADING -->
 <div class="loading-overlay" id="loadingOverlay">
   <div class="spinner"></div>
   <p>Enviando cadastro...</p>
 </div>
 
-<!-- TOPO -->
+<div id="toast-container"></div>
+
+<input type="hidden" id="formToken"    value="<?= FORM_TOKEN ?>">
+<input type="hidden" id="formLoadedAt" value="<?= FORM_LOADED_AT ?>">
+<div class="hp-field" aria-hidden="true">
+  <label>Website</label>
+  <input type="text" id="website" name="website" autocomplete="off" tabindex="-1">
+</div>
+
 <div class="topbar">
-  <div class="topbar-logo">auto<span>park</span></div>
+  <div class="topbar-logo">
+    <img class="topbar-logo-img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAa0AAAFFCAMAAABon0LqAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAABaUExURf///////////////////8nQ4PLz9yhDgulETe9zefrQ0+IGE+lETvjBxOc1P+QWIvGDifjBxe1kbPaytvrR1Pvh4vSip+YlMe9ze/3w8fKTmOtUXV1xodfc51CrxY0AAAAEdFJOU2DAkICF4w7jAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAU9klEQVR4Xu2dbberKpKGz+nO6e6Z7UTNu8nM//+bc2myEqgqeABfQu1T97e1ICh1KwIq/vHHn4YW/vHHP3eGFv40W4owW5owW5owW5owW5owW5owW5owW5owW5owW5owW5owW5owW5owW5owW5owW5owW5owW5owW5owW5owW5owW5owW5owW5owW5qI2KIPYRtfJ/IcvFE1ZksTZksTZksTZksTZksTZksTZksTZksTZksTZksTf/4/VKSOXb6rfW4AAAAASUVORK5CYII=" alt="Auto Park">
+  </div>
   <div class="topbar-divider"></div>
   <div class="topbar-info">
     <strong>Cadastro de Mensalista / Credenciado / Condômino</strong>
@@ -372,59 +161,53 @@
 
 <div class="wrapper" id="formWrapper">
 
-  <!-- UNIDADE -->
   <div class="card">
     <div class="card-header">Identificação da Unidade</div>
     <div class="card-body">
       <div class="row col-1">
         <div class="field">
-          <label>Unidade (nome / endereço do estacionamento) <span class="req">*</span></label>
-          <input type="text" id="unidade" placeholder="Ex: Auto Park — Shopping Curitiba">
+          <label>Unidade <span class="req">*</span></label>
+          <select id="unidade" disabled><option value="">Carregando unidades...</option></select>
+          <span class="field-error-msg" id="err-unidade">⚠ Selecione a unidade do estacionamento.</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- TIPO DE CADASTRO -->
   <div class="card">
-    <div class="card-header">Tipo de Cadastro <span style="color:rgba(255,255,255,.5);font-size:11px;font-weight:400;margin-left:4px">— selecione uma opção</span></div>
+    <div class="card-header">Tipo de Cadastro
+      <span style="color:rgba(255,255,255,.5);font-size:11px;font-weight:400;margin-left:4px">— selecione uma opção</span>
+    </div>
     <div class="card-body">
-      <div class="tipo-grid">
-        <div class="tipo-btn" onclick="setTipo('mensalista')">
-          <span class="tipo-icon">🚗</span>
-          Mensalista
-        </div>
-        <div class="tipo-btn" onclick="setTipo('condomino')">
-          <span class="tipo-icon">🏢</span>
-          Condômino /<br>Locatário
-        </div>
-        <div class="tipo-btn" onclick="setTipo('credenciado')">
-          <span class="tipo-icon">🪪</span>
-          Credenciado
-        </div>
+      <div class="tipo-grid" id="tipoGrid">
+        <div class="tipo-btn" onclick="setTipo('mensalista',this)"><span class="tipo-icon">🚗</span>Mensalista</div>
+        <div class="tipo-btn" onclick="setTipo('condomino',this)"><span class="tipo-icon">🏢</span>Condômino /<br>Locatário</div>
+        <div class="tipo-btn" onclick="setTipo('credenciado',this)"><span class="tipo-icon">🪪</span>Credenciado</div>
       </div>
       <input type="hidden" id="tipoCadastro">
+      <span class="field-error-msg" id="err-tipo">⚠ Selecione o tipo de cadastro para continuar.</span>
     </div>
   </div>
 
-  <!-- 01 DADOS DO CLIENTE -->
   <div class="card">
     <div class="card-header"><span class="num">1</span> Dados do Cliente</div>
     <div class="card-body">
       <div class="toggle-row">
         <div class="toggle-btn active" id="btnPF" onclick="setPessoa('pf')">Pessoa Física</div>
-        <div class="toggle-btn" id="btnPJ" onclick="setPessoa('pj')">Pessoa Jurídica</div>
+        <div class="toggle-btn"        id="btnPJ" onclick="setPessoa('pj')">Pessoa Jurídica</div>
       </div>
       <div class="row col-2">
         <div class="field" style="grid-column:1/-1">
           <label>Nome / Razão Social <span class="req">*</span></label>
           <input type="text" id="nome" placeholder="Nome completo ou razão social">
+          <span class="field-error-msg" id="err-nome">⚠ Informe o nome completo ou razão social.</span>
         </div>
       </div>
       <div class="row col-2">
         <div class="field">
           <label id="docLabel">CPF <span class="req">*</span></label>
           <input type="text" id="cpfcnpj" placeholder="000.000.000-00" maxlength="18">
+          <span class="field-error-msg" id="err-cpfcnpj">⚠ Informe o CPF/CNPJ.</span>
         </div>
         <div class="field" id="fieldRG">
           <label>RG</label>
@@ -440,6 +223,7 @@
           <label>E-mail <span class="req">*</span></label>
           <input type="email" id="email" placeholder="email@exemplo.com.br">
           <span class="hint">O boleto de cobrança será enviado para este endereço</span>
+          <span class="field-error-msg" id="err-email">⚠ Informe um e-mail válido.</span>
         </div>
       </div>
       <div class="row col-2">
@@ -450,12 +234,14 @@
         <div class="field">
           <label>Celular <span class="req">*</span></label>
           <input type="text" id="celular" placeholder="(41) 99000-0000" maxlength="15">
+          <span class="field-error-msg" id="err-celular">⚠ Informe o número de celular.</span>
         </div>
       </div>
       <div class="row col-2">
         <div class="field">
           <label>Endereço <span class="req">*</span></label>
           <input type="text" id="endereco" placeholder="Rua, Av., número">
+          <span class="field-error-msg" id="err-endereco">⚠ Informe o endereço.</span>
         </div>
         <div class="field">
           <label>Complemento</label>
@@ -466,28 +252,26 @@
         <div class="field">
           <label>Cidade / UF <span class="req">*</span></label>
           <input type="text" id="cidade" placeholder="Curitiba / PR">
+          <span class="field-error-msg" id="err-cidade">⚠ Informe a cidade.</span>
         </div>
         <div class="field">
           <label>CEP <span class="req">*</span></label>
           <input type="text" id="cep" placeholder="00000-000" maxlength="9">
+          <span class="field-error-msg" id="err-cep">⚠ Informe o CEP.</span>
         </div>
         <div class="field">
           <label>Bairro <span class="req">*</span></label>
           <input type="text" id="bairro" placeholder="Centro">
+          <span class="field-error-msg" id="err-bairro">⚠ Informe o bairro.</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 02 VEÍCULOS -->
   <div class="card">
     <div class="card-header"><span class="num">2</span> Dados dos Veículos</div>
     <div class="card-body">
-      <p style="font-size:12px;color:var(--muted);line-height:1.5">
-        Cadastre até 4 veículos. Apenas veículos cadastrados estão cobertos pelo seguro. Alterações de placa devem ser comunicadas com no mínimo 48h de antecedência.
-      </p>
-
-      <!-- Veículo 1 -->
+      <p style="font-size:12px;color:var(--muted);line-height:1.5">Cadastre até 4 veículos. Apenas veículos cadastrados estão cobertos pelo seguro. Alterações de placa devem ser comunicadas com no mínimo 48h de antecedência.</p>
       <div class="veiculo-card">
         <div class="veiculo-header">Veículo 1 <span class="badge">Principal</span></div>
         <div class="veiculo-body">
@@ -495,20 +279,24 @@
             <div class="field" style="grid-column:1/3">
               <label>Modelo <span class="req">*</span></label>
               <input type="text" id="v1modelo" placeholder="Ex: Volkswagen Polo">
+              <span class="field-error-msg" id="err-v1modelo">⚠ Informe o modelo do veículo principal.</span>
             </div>
             <div class="field">
               <label>Ano <span class="req">*</span></label>
               <input type="text" id="v1ano" placeholder="2023" maxlength="4">
+              <span class="field-error-msg" id="err-v1ano">⚠ Informe o ano.</span>
             </div>
           </div>
           <div class="row col-2">
             <div class="field">
               <label>Cor <span class="req">*</span></label>
               <input type="text" id="v1cor" placeholder="Prata">
+              <span class="field-error-msg" id="err-v1cor">⚠ Informe a cor.</span>
             </div>
             <div class="field">
               <label>Placa <span class="req">*</span></label>
               <input type="text" id="v1placa" placeholder="ABC1D23" maxlength="8" style="text-transform:uppercase">
+              <span class="field-error-msg" id="err-v1placa">⚠ Informe a placa do veículo.</span>
             </div>
           </div>
           <div class="field">
@@ -517,10 +305,7 @@
           </div>
         </div>
       </div>
-
-      <!-- Veículos 2-4 -->
       <div id="veiculos234" style="display:flex;flex-direction:column;gap:10px">
-        <!-- Veículo 2 -->
         <div class="veiculo-card">
           <div class="veiculo-header">Veículo 2 <span class="badge opt">Opcional</span></div>
           <div class="veiculo-body">
@@ -535,7 +320,6 @@
             <div class="field"><label>Observações</label><textarea id="v2obs"></textarea></div>
           </div>
         </div>
-        <!-- Veículo 3 -->
         <div class="veiculo-card">
           <div class="veiculo-header">Veículo 3 <span class="badge opt">Opcional</span></div>
           <div class="veiculo-body">
@@ -550,7 +334,6 @@
             <div class="field"><label>Observações</label><textarea id="v3obs"></textarea></div>
           </div>
         </div>
-        <!-- Veículo 4 -->
         <div class="veiculo-card">
           <div class="veiculo-header">Veículo 4 <span class="badge opt">Opcional</span></div>
           <div class="veiculo-body">
@@ -566,17 +349,13 @@
           </div>
         </div>
       </div>
-
-      <button type="button"
-        id="btnToggleVeiculos"
-        onclick="toggleVeiculos()"
+      <button type="button" id="btnToggleVeiculos" onclick="toggleVeiculos()"
         style="background:none;border:1.5px dashed var(--border);border-radius:7px;padding:8px;width:100%;font-family:'Barlow',sans-serif;font-size:13px;color:var(--muted);cursor:pointer;margin-top:4px">
         + Adicionar mais veículos (opcional)
       </button>
     </div>
   </div>
 
-  <!-- 03 CREDENCIADO (condicional) -->
   <div class="card cond-section" id="secCredenciado">
     <div class="card-header"><span class="num">3</span> Dados do Credenciado</div>
     <div class="card-body">
@@ -588,22 +367,24 @@
         <div class="field" style="grid-column:1/3">
           <label>Empresa <span class="req">*</span></label>
           <input type="text" id="credEmpresa" placeholder="Razão social da empresa">
+          <span class="field-error-msg" id="err-credEmpresa">⚠ Informe a empresa do credenciado.</span>
         </div>
         <div class="field">
           <label>Matrícula <span class="req">*</span></label>
           <input type="text" id="credMatricula" placeholder="00000">
+          <span class="field-error-msg" id="err-credMatricula">⚠ Informe a matrícula.</span>
         </div>
       </div>
       <div class="row col-2">
         <div class="field">
           <label>Data de Admissão <span class="req">*</span></label>
           <input type="date" id="credAdmissao">
+          <span class="field-error-msg" id="err-credAdmissao">⚠ Informe a data de admissão.</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 04 CONDÔMINO (condicional) -->
   <div class="card cond-section" id="secCondomino">
     <div class="card-header"><span class="num">4</span> Dados do Condômino / Locatário</div>
     <div class="card-body">
@@ -616,6 +397,7 @@
         <div class="field">
           <label>Bloco / Torre <span class="req">*</span></label>
           <input type="text" id="condBloco" placeholder="Bloco A / Torre 1">
+          <span class="field-error-msg" id="err-condBloco">⚠ Informe o bloco ou torre.</span>
         </div>
         <div class="field">
           <label>Loja / Empresa</label>
@@ -625,272 +407,373 @@
     </div>
   </div>
 
-  <!-- ACEITE E ENVIO -->
   <div class="card">
     <div class="card-header">Declaração e Aceite das Normas</div>
     <div class="card-body">
       <div class="normas">
-        <p><strong>Normas do Estacionamento</strong></p>
-        <p>• É aceito o cadastramento de até 4 (quatro) placas/veículos por vaga contratada, sendo permitida a utilização de apenas um carro por vez na vaga. As placas deverão ser atualizadas junto à Auto Park com no mínimo 48 horas de antecedência.</p>
+        <p><strong>Normas de Utilização do Estacionamento</strong></p>
+        <p>• É aceito o cadastramento de até 4 (quatro) placas/veículos por vaga contratada, sendo permitida a utilização de apenas um carro por vez na vaga. As placas deverão ser atualizadas com no mínimo 48 horas de antecedência.</p>
         <p>• Apenas veículos informados no cadastro estão assegurados no estacionamento.</p>
-        <p>• A credencial é intransferível e sua correta utilização e conservação é de responsabilidade do usuário.</p>
-        <p>• O contrato poderá ser rescindido a qualquer momento mediante notificação escrita com antecedência mínima de 10 (dez) dias úteis.</p>
-        <p>• A perda da credencial deve ser comunicada imediatamente à administração. Taxa de reemissão: R$ 30,00.</p>
-        <p>• O não pagamento da mensalidade até o vencimento implicará na suspensão automática do contrato. Multa moratória: 2% + juros de mora de 1% ao mês.</p>
-        <p>• Os dados pessoais coletados serão utilizados exclusivamente para os fins deste cadastro, conforme a LGPD, e eliminados em até 30 dias após a rescisão do contrato.</p>
-        <p>• Caso a credencial seja utilizada por terceiros, adulterada, fotocopiada ou falsificada, o contrato será rescindido imediatamente.</p>
+        <p>• A Auto Park possui convênio com ConectCar, Sem Parar, Veloe e outros serviços de liberação automática. Mantenha o cadastro do veículo atualizado.</p>
+        <p>• Em unidades automatizadas (cancelas), o usuário receberá uma credencial para ingresso e saída.</p>
+        <p>• Os usuários com TAG ou OCR devem sempre portar a credencial para uso em eventuais instabilidades.</p>
+        <p>• A credencial é intransferível. O empréstimo da credencial é infração passível de rescisão imediata.</p>
+        <p>• Caso a credencial seja utilizada por terceiros, adulterada ou falsificada, o contrato será rescindido de imediato.</p>
+        <p>• A perda da credencial deve ser comunicada imediatamente. Taxa de reemissão: R$ 30,00.</p>
+        <p>• O contrato pode ser rescindido por qualquer parte mediante notificação escrita com 10 dias úteis de antecedência.</p>
+        <p>• O não pagamento da mensalidade implicará suspensão automática do contrato. Multa moratória: 2% + juros de 1% ao mês.</p>
+        <p>• Os valores das mensalidades serão reajustados com comunicação de no mínimo 30 dias de antecedência.</p>
         <p>• Motociclistas devem levar consigo capacetes, luvas e demais acessórios. A moto deve ser presa à barra de segurança.</p>
-        <p>• Dúvidas: contasareceber.pr@autopark.com.br</p>
+        <p>• O usuário é responsável por qualquer dano causado a outros veículos ou às instalações.</p>
+        <p>• Os dados pessoais coletados serão utilizados exclusivamente para fins de cadastro, conforme a LGPD, e eliminados em até 30 dias após a rescisão do contrato.</p>
+        <p>• Os dados armazenados digitalmente serão deletados de todas as bases de dados após o encerramento do contrato.</p>
+        <p>• Dúvidas: <strong>contasareceber.pr@autopark.com.br</strong></p>
       </div>
-
-      <label class="check-row">
+      <label class="check-row" id="rowAceiteNormas">
         <input type="checkbox" id="aceiteNormas">
         <span>Li e concordo com as <strong>Normas do Estacionamento</strong> e com a <strong>Política de Privacidade</strong> da Auto Park (LGPD).</span>
       </label>
-      <label class="check-row">
+      <label class="check-row" id="rowAceiteVeracidade">
         <input type="checkbox" id="aceiteVeracidade">
         <span>Confirmo que todas as informações fornecidas neste formulário são <strong>verdadeiras e corretas</strong>.</span>
       </label>
-
       <div class="field">
         <label>Observações Gerais</label>
         <textarea id="obsGerais" placeholder="Alguma informação adicional que deseje registrar (opcional)"></textarea>
       </div>
-
-      <button class="btn-submit" id="btnEnviar" onclick="enviar()">
-        Enviar Cadastro
-      </button>
+      <button class="btn-submit" id="btnEnviar" onclick="enviar()">Enviar Cadastro</button>
     </div>
-  </div>
-
-  <!-- FEEDBACK -->
-  <div class="feedback success" id="feedbackOK">
-    <div class="feedback-icon">✅</div>
-    <h3 style="color:#166534">Cadastro enviado com sucesso!</h3>
-    <p>A equipe da Auto Park analisará suas informações e entrará em contato pelo telefone ou e-mail cadastrado para confirmar e orientar sobre os próximos passos.</p>
-    <button class="btn-novo" onclick="novoCadastro()">Novo cadastro</button>
-  </div>
-
-  <div class="feedback error-msg" id="feedbackERR">
-    <div class="feedback-icon">❌</div>
-    <h3 style="color:#991B1B">Erro ao enviar</h3>
-    <p id="errMsg">Não foi possível enviar o cadastro. Verifique sua conexão e tente novamente.</p>
-    <button class="btn-novo" onclick="fecharErro()">Tentar novamente</button>
   </div>
 
 </div>
 
+<div class="wrapper" id="feedbackOK" style="display:none">
+  <div class="feedback success">
+    <div class="feedback-icon">✅</div>
+    <h3>Cadastro enviado com sucesso!</h3>
+    <p>As informações foram registradas. A equipe da Auto Park entrará em contato para confirmar o cadastro.</p>
+    <button type="button" class="btn-novo" onclick="novoCadastro()">Voltar ao formulário</button>
+  </div>
+</div>
+
+<div class="wrapper" id="feedbackERR" style="display:none">
+  <div class="feedback error-msg">
+    <div class="feedback-icon">🚫</div>
+    <h3>Não foi possível enviar o cadastro</h3>
+    <p id="errMsg">Ocorreu um erro ao registrar as informações.</p>
+    <button type="button" class="btn-novo" onclick="fecharErro()">Tentar novamente</button>
+  </div>
+</div>
+
 <script>
-// ── CONFIGURAÇÃO — substitua pela URL do seu Web App ──────────────────────
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzzcg4SuM6ACkBQpmWHksMlFKURZIcOWNgBud__Bzsdlrrw-Ve1splMzYR1U00SzQ6y/exec';
-// ─────────────────────────────────────────────────────────────────────────
+var TOAST_DURATION = 5500;
 
-let tipoCadastro = '';
-let tipoPessoa   = 'pf';
-let veiculosExpandidos = false;
+function showToast(type, title, msg, duration) {
+  var container = document.getElementById('toast-container');
+  var d = duration || TOAST_DURATION;
+  var icons = {warning:'⚠️', error:'🚫', info:'ℹ️'};
+  var toast = document.createElement('div');
+  toast.className = 'toast toast-' + type;
+  toast.innerHTML =
+    '<span class="toast-icon">'+(icons[type]||'⚠️')+'</span>'+
+    '<div class="toast-body">'+
+      '<div class="toast-title">'+title+'</div>'+
+      '<div class="toast-msg">'+msg+'</div>'+
+    '</div>'+
+    '<button class="toast-close" onclick="dismissToast(this.parentElement)">✕</button>'+
+    '<div class="toast-progress" style="animation-duration:'+d+'ms"></div>';
+  container.appendChild(toast);
+  toast._timer = setTimeout(function(){ dismissToast(toast); }, d);
+  return toast;
+}
 
-function setTipo(tipo) {
+function dismissToast(toast) {
+  if(!toast||toast._dismissed) return;
+  toast._dismissed = true;
+  clearTimeout(toast._timer);
+  toast.classList.add('toast-exit');
+  setTimeout(function(){ toast.remove(); }, 240);
+}
+
+var tipoCadastro = '';
+var tipoPessoa = 'pf';
+var veiculosExpandidos = false;
+
+// URL do Web App do Apps Script — usada pelo GitHub Pages para buscar unidades e enviar cadastros
+var GAS_URL = 'https://script.google.com/macros/s/AKfycbzzcg4SuM6ACkBQpmWHksMlFKURZIcOWNgBud__Bzsdlrrw-Ve1splMzYR1U00SzQ6y/exec';
+
+function carregarUnidades() {
+  var select = document.getElementById('unidade');
+  select.disabled = true;
+  select.innerHTML = '<option value="">Carregando unidades...</option>';
+
+  function preencherSelect(unidades) {
+    select.innerHTML = '<option value="">Selecione a unidade</option>';
+    if(!Array.isArray(unidades) || unidades.length === 0) {
+      select.innerHTML = '<option value="">Nenhuma unidade cadastrada</option>';
+      select.disabled = true;
+      showToast('warning','Lista de unidades vazia',
+        'Cadastre as unidades na aba <strong>Unidades</strong> da planilha, uma por linha na coluna A.', 8000);
+      return;
+    }
+    unidades.forEach(function(u) {
+      var opt = document.createElement('option');
+      opt.value = u; opt.textContent = u;
+      select.appendChild(opt);
+    });
+    select.disabled = false;
+  }
+
+  // Dentro do Apps Script usa google.script.run (mais eficiente)
+  if(typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(preencherSelect)
+      .withFailureHandler(function(err) {
+        select.innerHTML = '<option value="">Erro ao carregar unidades</option>';
+        select.disabled = true;
+        showToast('error','Erro ao carregar unidades', err&&err.message?err.message:String(err), 8000);
+      })
+      .obterUnidades();
+  } else {
+    // Fora do Apps Script (GitHub Pages) busca via fetch com ?action=unidades
+    fetch(GAS_URL + '?action=unidades')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if(data && data.status === 'ok') {
+          preencherSelect(data.unidades);
+        } else {
+          throw new Error(data && data.mensagem ? data.mensagem : 'Resposta inesperada do servidor.');
+        }
+      })
+      .catch(function(err) {
+        select.innerHTML = '<option value="">Erro ao carregar unidades</option>';
+        select.disabled = true;
+        showToast('error','Erro ao carregar unidades', err.message || String(err), 8000);
+      });
+  }
+}
+
+function setTipo(tipo, btn) {
   tipoCadastro = tipo;
   document.getElementById('tipoCadastro').value = tipo;
-  document.querySelectorAll('.tipo-btn').forEach(b => b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
-  document.getElementById('secCredenciado').classList.toggle('visible', tipo === 'credenciado');
-  document.getElementById('secCondomino').classList.toggle('visible',   tipo === 'condomino');
+  document.querySelectorAll('.tipo-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.getElementById('tipoGrid').classList.remove('error-highlight');
+  hideFieldError('tipo');
+  document.getElementById('secCredenciado').classList.toggle('visible', tipo==='credenciado');
+  document.getElementById('secCondomino').classList.toggle('visible',   tipo==='condomino');
 }
 
 function setPessoa(tipo) {
   tipoPessoa = tipo;
-  document.getElementById('btnPF').classList.toggle('active', tipo === 'pf');
-  document.getElementById('btnPJ').classList.toggle('active', tipo === 'pj');
-  document.getElementById('docLabel').innerHTML = (tipo === 'pf' ? 'CPF' : 'CNPJ') + ' <span class="req">*</span>';
-  document.getElementById('cpfcnpj').placeholder = tipo === 'pf' ? '000.000.000-00' : '00.000.000/0001-00';
-  document.getElementById('fieldRG').style.display = tipo === 'pf' ? '' : 'none';
-  document.getElementById('fieldIE').style.display = tipo === 'pj' ? '' : 'none';
+  document.getElementById('btnPF').classList.toggle('active', tipo==='pf');
+  document.getElementById('btnPJ').classList.toggle('active', tipo==='pj');
+  document.getElementById('docLabel').innerHTML = (tipo==='pf'?'CPF':'CNPJ')+' <span class="req">*</span>';
+  document.getElementById('cpfcnpj').placeholder = tipo==='pf'?'000.000.000-00':'00.000.000/0001-00';
+  document.getElementById('fieldRG').style.display = tipo==='pf'?'':'none';
+  document.getElementById('fieldIE').style.display = tipo==='pj'?'':'none';
 }
 
 function toggleVeiculos() {
   veiculosExpandidos = !veiculosExpandidos;
-  const el = document.getElementById('veiculos234');
-  const btn = document.getElementById('btnToggleVeiculos');
-  el.style.display = veiculosExpandidos ? 'flex' : 'none';
-  btn.textContent = veiculosExpandidos ? '− Ocultar veículos adicionais' : '+ Adicionar mais veículos (opcional)';
+  document.getElementById('veiculos234').style.display = veiculosExpandidos?'flex':'none';
+  document.getElementById('btnToggleVeiculos').textContent =
+    veiculosExpandidos?'− Ocultar veículos adicionais':'+ Adicionar mais veículos (opcional)';
 }
 
-// Oculta veículos 2-4 inicialmente
 document.getElementById('veiculos234').style.display = 'none';
+carregarUnidades();
 
-// Máscara CEP
-document.getElementById('cep').addEventListener('input', function() {
-  let v = this.value.replace(/\D/g,'');
-  if(v.length > 5) v = v.slice(0,5) + '-' + v.slice(5,8);
-  this.value = v;
+document.getElementById('cep').addEventListener('input', function(){
+  var v=this.value.replace(/\D/g,'');
+  if(v.length>5) v=v.slice(0,5)+'-'+v.slice(5,8);
+  this.value=v;
 });
 
-// Máscara telefone
-['fone','celular'].forEach(id => {
-  document.getElementById(id).addEventListener('input', function() {
-    let v = this.value.replace(/\D/g,'');
-    if(v.length > 10)
-      v = '(' + v.slice(0,2) + ') ' + v.slice(2,7) + '-' + v.slice(7,11);
-    else if(v.length > 6)
-      v = '(' + v.slice(0,2) + ') ' + v.slice(2,6) + '-' + v.slice(6);
-    else if(v.length > 2)
-      v = '(' + v.slice(0,2) + ') ' + v.slice(2);
-    this.value = v;
+['fone','celular'].forEach(function(id){
+  document.getElementById(id).addEventListener('input', function(){
+    var v=this.value.replace(/\D/g,'');
+    if(v.length>10)     v='('+v.slice(0,2)+') '+v.slice(2,7)+'-'+v.slice(7,11);
+    else if(v.length>6) v='('+v.slice(0,2)+') '+v.slice(2,6)+'-'+v.slice(6);
+    else if(v.length>2) v='('+v.slice(0,2)+') '+v.slice(2);
+    this.value=v;
   });
 });
 
-// Máscara CPF/CNPJ
-document.getElementById('cpfcnpj').addEventListener('input', function() {
-  let v = this.value.replace(/\D/g,'');
-  if(tipoPessoa === 'pf') {
-    if(v.length > 9) v = v.slice(0,3)+'.'+v.slice(3,6)+'.'+v.slice(6,9)+'-'+v.slice(9,11);
-    else if(v.length > 6) v = v.slice(0,3)+'.'+v.slice(3,6)+'.'+v.slice(6);
-    else if(v.length > 3) v = v.slice(0,3)+'.'+v.slice(3);
+document.getElementById('cpfcnpj').addEventListener('input', function(){
+  var v=this.value.replace(/\D/g,'');
+  if(tipoPessoa==='pf'){
+    if(v.length>9)      v=v.slice(0,3)+'.'+v.slice(3,6)+'.'+v.slice(6,9)+'-'+v.slice(9,11);
+    else if(v.length>6) v=v.slice(0,3)+'.'+v.slice(3,6)+'.'+v.slice(6);
+    else if(v.length>3) v=v.slice(0,3)+'.'+v.slice(3);
   } else {
-    if(v.length > 12) v = v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5,8)+'/'+v.slice(8,12)+'-'+v.slice(12,14);
-    else if(v.length > 8) v = v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5,8)+'/'+v.slice(8);
-    else if(v.length > 5) v = v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5);
-    else if(v.length > 2) v = v.slice(0,2)+'.'+v.slice(2);
+    if(v.length>12)     v=v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5,8)+'/'+v.slice(8,12)+'-'+v.slice(12,14);
+    else if(v.length>8) v=v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5,8)+'/'+v.slice(8);
+    else if(v.length>5) v=v.slice(0,2)+'.'+v.slice(2,5)+'.'+v.slice(5);
+    else if(v.length>2) v=v.slice(0,2)+'.'+v.slice(2);
   }
-  this.value = v;
+  this.value=v;
 });
 
-// Placa uppercase
-['v1placa','v2placa','v3placa','v4placa'].forEach(id => {
-  document.getElementById(id).addEventListener('input', function() {
-    this.value = this.value.toUpperCase();
+['v1placa','v2placa','v3placa','v4placa'].forEach(function(id){
+  document.getElementById(id).addEventListener('input', function(){ this.value=this.value.toUpperCase(); });
+});
+
+document.querySelectorAll('input,textarea,select').forEach(function(el){
+  el.addEventListener('input', function(){
+    if(this.classList.contains('error')){
+      this.classList.remove('error');
+      var e=document.getElementById('err-'+this.id);
+      if(e) e.classList.remove('visible');
+    }
   });
 });
 
-function val(id) { return document.getElementById(id)?.value?.trim() || ''; }
+['aceiteNormas','aceiteVeracidade'].forEach(function(id){
+  document.getElementById(id).addEventListener('change', function(){
+    var row=this.closest('.check-row');
+    if(this.checked&&row) row.classList.remove('error-check');
+  });
+});
 
-function marcarErro(id, flag) {
-  const el = document.getElementById(id);
-  if(!el) return;
-  el.classList.toggle('error', flag);
+function val(id){ var el=document.getElementById(id); return el?el.value.trim():''; }
+
+function showFieldError(id){
+  var el=document.getElementById(id); if(el) el.classList.add('error');
+  var e=document.getElementById('err-'+id); if(e) e.classList.add('visible');
+}
+function hideFieldError(id){
+  var el=document.getElementById(id); if(el) el.classList.remove('error');
+  var e=document.getElementById('err-'+id); if(e) e.classList.remove('visible');
 }
 
-function validar() {
-  let ok = true;
-  const obrigatorios = ['unidade','nome','cpfcnpj','email','celular','endereco','cidade','cep','bairro',
-                        'v1modelo','v1ano','v1cor','v1placa'];
-  obrigatorios.forEach(id => {
-    const vazio = !val(id);
-    marcarErro(id, vazio);
-    if(vazio) ok = false;
+function validar(){
+  var erros=[], primeiroErroId=null;
+  var obrigatorios=[
+    {id:'unidade',  label:'Unidade'},
+    {id:'nome',     label:'Nome / Razão Social'},
+    {id:'cpfcnpj',  label:tipoPessoa==='pf'?'CPF':'CNPJ'},
+    {id:'email',    label:'E-mail'},
+    {id:'celular',  label:'Celular'},
+    {id:'endereco', label:'Endereço'},
+    {id:'cidade',   label:'Cidade / UF'},
+    {id:'cep',      label:'CEP'},
+    {id:'bairro',   label:'Bairro'},
+    {id:'v1modelo', label:'Modelo do veículo principal'},
+    {id:'v1ano',    label:'Ano do veículo principal'},
+    {id:'v1cor',    label:'Cor do veículo principal'},
+    {id:'v1placa',  label:'Placa do veículo principal'},
+  ];
+  obrigatorios.forEach(function(c){
+    if(!val(c.id)){ showFieldError(c.id); erros.push(c.label); if(!primeiroErroId) primeiroErroId=c.id; }
+    else hideFieldError(c.id);
   });
-
-  if(!tipoCadastro) {
-    alert('Selecione o tipo de cadastro (Mensalista, Condômino ou Credenciado).');
-    ok = false;
+  if(!tipoCadastro){
+    document.getElementById('tipoGrid').classList.add('error-highlight');
+    document.getElementById('err-tipo').classList.add('visible');
+    erros.push('Tipo de cadastro');
+    if(!primeiroErroId) primeiroErroId='tipoGrid';
   }
-
-  if(tipoCadastro === 'credenciado') {
-    ['credEmpresa','credMatricula','credAdmissao'].forEach(id => {
-      const vazio = !val(id);
-      marcarErro(id, vazio);
-      if(vazio) ok = false;
+  if(tipoCadastro==='credenciado'){
+    ['credEmpresa','credMatricula','credAdmissao'].forEach(function(id){
+      if(!val(id)){ showFieldError(id); erros.push(id); if(!primeiroErroId) primeiroErroId=id; }
+      else hideFieldError(id);
     });
   }
-  if(tipoCadastro === 'condomino') {
-    const vazio = !val('condBloco');
-    marcarErro('condBloco', vazio);
-    if(vazio) ok = false;
+  if(tipoCadastro==='condomino'){
+    if(!val('condBloco')){ showFieldError('condBloco'); erros.push('Bloco / Torre'); if(!primeiroErroId) primeiroErroId='condBloco'; }
+    else hideFieldError('condBloco');
   }
+  var checkErro=false;
+  if(!document.getElementById('aceiteNormas').checked){
+    document.getElementById('rowAceiteNormas').classList.add('error-check'); checkErro=true;
+  } else document.getElementById('rowAceiteNormas').classList.remove('error-check');
+  if(!document.getElementById('aceiteVeracidade').checked){
+    document.getElementById('rowAceiteVeracidade').classList.add('error-check'); checkErro=true;
+  } else document.getElementById('rowAceiteVeracidade').classList.remove('error-check');
 
-  if(!document.getElementById('aceiteNormas').checked) {
-    alert('É necessário aceitar as Normas do Estacionamento para prosseguir.');
-    ok = false;
+  if(erros.length>0||checkErro){
+    var msg='';
+    if(erros.length>0){
+      var lista=erros.slice(0,4).join(', ')+(erros.length>4?' e mais '+(erros.length-4):'');
+      msg+='Campos obrigatórios não preenchidos: <strong>'+lista+'</strong>.';
+    }
+    if(checkErro){ if(msg) msg+='<br>'; msg+='Você precisa aceitar as normas e confirmar a veracidade dos dados.'; }
+    showToast('warning','Formulário incompleto',msg,7000);
+    if(primeiroErroId){
+      var el=document.getElementById(primeiroErroId);
+      if(el) setTimeout(function(){ el.scrollIntoView({behavior:'smooth',block:'center'}); },100);
+    }
+    return false;
   }
-  if(!document.getElementById('aceiteVeracidade').checked) {
-    alert('É necessário confirmar a veracidade das informações.');
-    ok = false;
-  }
-  return ok;
+  return true;
 }
 
-function enviar() {
+function enviar(){
   if(!validar()) return;
-
-  const dados = {
-    timestamp:       new Date().toLocaleString('pt-BR'),
-    unidade:         val('unidade'),
-    tipoCadastro,
-    tipoPessoa,
-    nome:            val('nome'),
-    cpfcnpj:         val('cpfcnpj'),
-    rg:              val('rg'),
-    ie:              val('ie'),
-    email:           val('email'),
-    fone:            val('fone'),
-    celular:         val('celular'),
-    endereco:        val('endereco'),
-    complemento:     val('complemento'),
-    cidade:          val('cidade'),
-    cep:             val('cep'),
-    bairro:          val('bairro'),
-    v1modelo:        val('v1modelo'), v1ano: val('v1ano'), v1cor: val('v1cor'), v1placa: val('v1placa'), v1obs: val('v1obs'),
-    v2modelo:        val('v2modelo'), v2ano: val('v2ano'), v2cor: val('v2cor'), v2placa: val('v2placa'), v2obs: val('v2obs'),
-    v3modelo:        val('v3modelo'), v3ano: val('v3ano'), v3cor: val('v3cor'), v3placa: val('v3placa'), v3obs: val('v3obs'),
-    v4modelo:        val('v4modelo'), v4ano: val('v4ano'), v4cor: val('v4cor'), v4placa: val('v4placa'), v4obs: val('v4obs'),
-    credEmpresa:     val('credEmpresa'),
-    credMatricula:   val('credMatricula'),
-    credAdmissao:    val('credAdmissao'),
-    condBloco:       val('condBloco'),
-    condLoja:        val('condLoja'),
-    obsGerais:       val('obsGerais'),
+  var dados={
+    timestamp:new Date().toLocaleString('pt-BR'),
+    _formToken:val('formToken'), _loadedAt:val('formLoadedAt'), _website:val('website'),
+    unidade:val('unidade'), tipoCadastro:tipoCadastro, tipoPessoa:tipoPessoa,
+    nome:val('nome'), cpfcnpj:val('cpfcnpj'), rg:val('rg'), ie:val('ie'),
+    email:val('email'), fone:val('fone'), celular:val('celular'),
+    endereco:val('endereco'), complemento:val('complemento'), cidade:val('cidade'), cep:val('cep'), bairro:val('bairro'),
+    v1modelo:val('v1modelo'),v1ano:val('v1ano'),v1cor:val('v1cor'),v1placa:val('v1placa'),v1obs:val('v1obs'),
+    v2modelo:val('v2modelo'),v2ano:val('v2ano'),v2cor:val('v2cor'),v2placa:val('v2placa'),v2obs:val('v2obs'),
+    v3modelo:val('v3modelo'),v3ano:val('v3ano'),v3cor:val('v3cor'),v3placa:val('v3placa'),v3obs:val('v3obs'),
+    v4modelo:val('v4modelo'),v4ano:val('v4ano'),v4cor:val('v4cor'),v4placa:val('v4placa'),v4obs:val('v4obs'),
+    credEmpresa:val('credEmpresa'), credMatricula:val('credMatricula'), credAdmissao:val('credAdmissao'),
+    condBloco:val('condBloco'), condLoja:val('condLoja'), obsGerais:val('obsGerais'),
   };
 
   document.getElementById('loadingOverlay').classList.add('visible');
   document.getElementById('btnEnviar').disabled = true;
 
-  // Com mode: no-cors o fetch não retorna corpo legível,
-  // mas o GAS recebe e processa normalmente.
-  // Usamos um timeout de segurança para garantir o feedback ao usuário.
-  const timer = setTimeout(() => {
+  function onSucesso() {
     document.getElementById('loadingOverlay').classList.remove('visible');
     document.getElementById('formWrapper').style.display = 'none';
     document.getElementById('feedbackOK').style.display  = 'flex';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, 4000);
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
 
-  fetch(SCRIPT_URL, {
-    method:  'POST',
-    mode:    'no-cors',
-    headers: { 'Content-Type': 'text/plain' },
-    body:    JSON.stringify(dados),
-  })
-  .then(() => {
-    clearTimeout(timer);
+  function onErro(msg) {
     document.getElementById('loadingOverlay').classList.remove('visible');
-    document.getElementById('formWrapper').style.display = 'none';
-    document.getElementById('feedbackOK').style.display  = 'flex';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  })
-  .catch(() => {
-    clearTimeout(timer);
-    document.getElementById('loadingOverlay').classList.remove('visible');
-    document.getElementById('formWrapper').style.display = 'none';
-    document.getElementById('feedbackOK').style.display  = 'flex';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
+    document.getElementById('btnEnviar').disabled = false;
+    document.getElementById('errMsg').textContent = msg;
+    document.getElementById('feedbackERR').style.display = 'flex';
+    showToast('error','Falha no envio','Não foi possível registrar o cadastro. Verifique sua conexão e tente novamente.',8000);
+  }
+
+  // Dentro do Apps Script
+  if(typeof google !== 'undefined' && google.script && google.script.run) {
+    google.script.run
+      .withSuccessHandler(onSucesso)
+      .withFailureHandler(function(err){ onErro(err&&err.message?err.message:String(err||'Erro desconhecido.')); })
+      .gravarNaPlanilha(dados);
+  } else {
+    // GitHub Pages — envia via fetch POST para o Web App
+    fetch(GAS_URL, {
+      method:  'POST',
+      mode:    'no-cors',
+      headers: {'Content-Type': 'text/plain'},
+      body:    JSON.stringify(dados),
+    })
+    .then(function() {
+      // no-cors não retorna corpo legível; consideramos sucesso se não houve erro de rede
+      onSucesso();
+    })
+    .catch(function(err) {
+      onErro(err.message || 'Erro de conexão. Verifique sua internet e tente novamente.');
+    });
+  }
 }
 
-function novoCadastro() {
-  document.getElementById('feedbackOK').style.display = 'none';
-  document.getElementById('formWrapper').style.display = 'flex';
-  document.querySelectorAll('input[type=text],input[type=email],input[type=date],textarea')
-    .forEach(el => el.value = '');
-  document.querySelectorAll('input[type=checkbox]').forEach(el => el.checked = false);
-  document.querySelectorAll('.tipo-btn').forEach(b => b.classList.remove('active'));
-  tipoCadastro = '';
-  setPessoa('pf');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+function novoCadastro(){ window.location.reload(); }
 
-function fecharErro() {
+function fecharErro(){
   document.getElementById('feedbackERR').style.display = 'none';
+  document.getElementById('formWrapper').style.display = 'flex';
+  document.getElementById('btnEnviar').disabled = false;
 }
 </script>
 </body>
