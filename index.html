@@ -758,13 +758,13 @@ function enviar(){
       .withFailureHandler(function(err){ onErro(err&&err.message?err.message:String(err||'Erro desconhecido.')); })
       .gravarNaPlanilha(dados);
   } else {
-    // GitHub Pages — usa FormData (simple request) para evitar preflight CORS
-    var formData = new FormData();
-    formData.append('dados', JSON.stringify(dados));
-
+    // GitHub Pages — no-cors é o único modo que funciona cross-origin com GAS.
+    // A resposta é opaca (não legível), mas o dado chega ao servidor normalmente.
     fetch(GAS_URL, {
-      method: 'POST',
-      body:   formData,
+      method:  'POST',
+      mode:    'no-cors',
+      headers: { 'Content-Type': 'text/plain' },
+      body:    JSON.stringify(dados),
     })
     .then(function() { onSucesso(); })
     .catch(function(err) {
