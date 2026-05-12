@@ -167,7 +167,15 @@
       <div class="row col-1">
         <div class="field">
           <label>Unidade <span class="req">*</span></label>
-          <select id="unidade" disabled><option value="">Carregando unidades...</option></select>
+          <select id="unidade">
+            <option value="">Selecione a unidade</option>
+            <!-- ════════════════════════════════════════════════════
+                 LISTA DE UNIDADES — edite aqui quando necessário
+                 Adicione ou remova linhas <option> conforme a rede
+                 de estacionamentos da Auto Park.
+                 ════════════════════════════════════════════════════ -->
+            <option value="Endeavour Prime Offices">Endeavour Prime Offices</option>
+          </select>
           <span class="field-error-msg" id="err-unidade">⚠ Selecione a unidade do estacionamento.</span>
         </div>
       </div>
@@ -499,66 +507,11 @@ var tipoCadastro = '';
 var tipoPessoa = 'pf';
 var veiculosExpandidos = false;
 
-// URL do Web App do Apps Script — usada pelo GitHub Pages para enviar cadastros
+// URL do Web App do Apps Script — usada para enviar os cadastros
 var GAS_URL = 'https://script.google.com/macros/s/AKfycbzzcg4SuM6ACkBQpmWHksMlFKURZIcOWNgBud__Bzsdlrrw-Ve1splMzYR1U00SzQ6y/exec';
 
-// URL do proxy separado para buscar unidades (script minimalista sem redirecionamento)
-// Após criar e publicar o proxy_unidades.gs, substitua o valor abaixo pela URL gerada
-var PROXY_URL = 'https://script.google.com/macros/s/AKfycbzs2dFDw3LmlOjqSgftjq6VG-fldKNQUW173hiC_o2CAb4lwDqp16wYPu2QL2fbzek/exec';
-
-function carregarUnidades() {
-  var select = document.getElementById('unidade');
-  select.disabled = true;
-  select.innerHTML = '<option value="">Carregando unidades...</option>';
-
-  function preencherSelect(unidades) {
-    select.innerHTML = '<option value="">Selecione a unidade</option>';
-    if(!Array.isArray(unidades) || unidades.length === 0) {
-      select.innerHTML = '<option value="">Nenhuma unidade cadastrada</option>';
-      select.disabled = true;
-      showToast('warning','Lista de unidades vazia',
-        'Cadastre as unidades na aba <strong>Unidades</strong> da planilha, uma por linha na coluna A.', 8000);
-      return;
-    }
-    unidades.forEach(function(u) {
-      var opt = document.createElement('option');
-      opt.value = u; opt.textContent = u;
-      select.appendChild(opt);
-    });
-    select.disabled = false;
-  }
-
-  // Dentro do Apps Script usa google.script.run (mais eficiente)
-  if(typeof google !== 'undefined' && google.script && google.script.run) {
-    google.script.run
-      .withSuccessHandler(preencherSelect)
-      .withFailureHandler(function(err) {
-        select.innerHTML = '<option value="">Erro ao carregar unidades</option>';
-        select.disabled = true;
-        showToast('error','Erro ao carregar unidades', err&&err.message?err.message:String(err), 8000);
-      })
-      .obterUnidades();
-  } else {
-    // GitHub Pages — busca unidades via proxy dedicado (sem redirecionamento)
-    fetch(PROXY_URL)
-      .then(function(r) {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
-      })
-      .then(function(data) {
-        if(data && data.status === 'ok') {
-          preencherSelect(data.unidades);
-        } else {
-          throw new Error(data && data.mensagem ? data.mensagem : 'Resposta inesperada do servidor.');
-        }
-      })
-      .catch(function(err) {
-        select.innerHTML = '<option value="">Erro ao carregar unidades</option>';
-        select.disabled = true;
-        showToast('error','Erro ao carregar unidades', err.message || String(err), 8000);
-      });
-  }
-}
+// Unidades definidas diretamente no HTML — nenhuma chamada externa necessária.
+// Para adicionar/remover unidades, edite o <select id="unidade"> no HTML.
 
 function setTipo(tipo, btn) {
   tipoCadastro = tipo;
@@ -589,7 +542,6 @@ function toggleVeiculos() {
 }
 
 document.getElementById('veiculos234').style.display = 'none';
-carregarUnidades();
 
 document.getElementById('cep').addEventListener('input', function(){
   var v=this.value.replace(/\D/g,'');
